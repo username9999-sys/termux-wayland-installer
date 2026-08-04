@@ -10,9 +10,8 @@ step_system_update() {
     echo ""
 
     execute run_with_spinner "Updating package lists" \
-        DEBIAN_FRONTEND=noninteractive apt-get update -y
+        bash -c 'DEBIAN_FRONTEND=noninteractive apt-get update -y'
 
     execute run_with_spinner "Upgrading packages" \
-        DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -q \
-        -o Dpkg::Options::="--force-confold"
+        bash -c 'DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -q -o Dpkg::Options::="--force-confold"'
 }

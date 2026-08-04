@@ -23,5 +23,5 @@ step_repositories() {
 
     # Update after adding repos
     execute run_with_spinner "Updating package lists after repo addition" \
-        DEBIAN_FRONTEND=noninteractive apt-get update -y
+        bash -c 'DEBIAN_FRONTEND=noninteractive apt-get update -y'
 }
