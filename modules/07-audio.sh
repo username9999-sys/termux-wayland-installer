@@ -1,0 +1,33 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# ============================================================
+# termux-wayland-installer - Step: PipeWire Audio
+# ============================================================
+
+step_audio() {
+    print_step $((++CURRENT_STEP)) "${TOTAL_STEPS}" "Installing PipeWire + WirePlumber Audio Stack"
+    echo ""
+
+    local packages=($(cfg_get_array "packages.audio.modules"))
+    local failed=()
+
+    for pkg_spec in "${packages[@]}"; do
+        IFS='|' read -r pkg name <<< "${pkg_spec}"
+        name="${name:-$pkg}"
+        if ! execute install_pkg "${pkg}" "${name}"; then
+            failed+=("${name}")
+        fi
+    done
+
+    if [[ ${#failed[@]} -gt 0 ]]; then
+        log_error "Failed to install audio packages: ${failed[*]}"
+        return 1
+    fi
+
+    # Install bluez if bluetooth audio enabled
+    if cfg_is_true "audio.bluetooth"; then
+        execute install_pkg "bluez" "BlueZ"
+        execute install_pkg "bluez-tools" "BlueZ Tools"
+    fi
+
+    log_success "Audio stack installed"
+}

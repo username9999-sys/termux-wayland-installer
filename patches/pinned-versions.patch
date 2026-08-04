@@ -1,0 +1,101 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# ============================================================
+# termux-wayland-installer - Pinned Versions Support
+# Patch for lib/common.sh and lib/yaml.sh
+# ============================================================
+
+# This patch file shows the changes needed to implement pinned_versions support
+
+cat << 'PATCH_EOF'
+=== PATCH 1: lib/yaml.sh - Parse pinned_versions as associative array ===
+
+In parse_yaml() function, after the existing array handling, add support for
+key: value mappings where key is package name and value is version:
+
+  # Detect pinned_versions mappings (package: version)
+  if [[ "${trimmed}" =~ ^([a-zA-Z0-9_.+-]+):[[:space:]]*(.+)$ ]] && \
+     [[ ${#path_stack[@]} -gt 0 ]] && \
+     [[ "${path_stack[-1]}" == "pinned_versions" ]]; then
+      local pkg_name="${BASH_REMATCH[1]}"
+      local pkg_version="${BASH_REMATCH[2]}"
+      pkg_version=$(echo "${pkg_version}" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s/^"//;s/"$//;s/^'"'"'//;s/'"'"'$//')
+      local var_name="${prefix}PINNED_${pkg_name//-/_}"
+      var_name="${var_name^^}"
+      export "${var_name}=${pkg_version}"
+      continue
+  fi
+
+Also add a function to get pinned version:
+get_pinned_version() {
+    local pkg="$1"
+    local var_name="CFG_PINNED_${pkg//-/_}"
+    var_name="${var_name^^}"
+    echo "${!var_name:-}"
+}
+
+
+=== PATCH 2: lib/common.sh - Modified install_pkg ===
+
+install_pkg() {
+    local pkg="$1"
+    local name="${2:-$pkg}"
+    local max_retries="${3:-2}"
+    local version="${4:-}"  # Optional version parameter
+
+    # Check for pinned version if not explicitly provided
+    if [[ -z "${version}" ]]; then
+        version=$(get_pinned_version "${pkg}")
+    fi
+
+    local install_target="${pkg}"
+    [[ -n "${version}" ]] && install_target="${pkg}=${version}"
+
+    log_info "Installing ${name} (${install_target})"
+
+    for attempt in $(seq 1 "${max_retries}"); do
+        if (DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            -o Dpkg::Options::="--force-confold" "${install_target}" > /dev/null 2>&1); then
+            log_success "Installed ${name} ${version:+(${version})}"
+            return 0
+        fi
+        log_warn "Attempt ${attempt}/${max_retries} failed for ${name}, retrying..."
+        apt-get update -y > /dev/null 2>&1 || true
+        sleep 2
+    done
+
+    log_error "Failed to install ${name} (${install_target}) after ${max_retries} attempts"
+    return 1
+}
+
+# Also update install_pkgs to pass version
+install_pkgs() {
+    local pkgs=("$@")
+    local failed=()
+
+    for pkg_spec in "${pkgs[@]}"; do
+        IFS='|' read -r pkg name <<< "${pkg_spec}"
+        name="${name:-$pkg}"
+        # Check for pinned version
+        local version=$(get_pinned_version "${pkg}")
+        if ! install_pkg "${pkg}" "${name}" 2 "${version}"; then
+            failed+=("${name}")
+        fi
+    done
+
+    if [[ ${#failed[@]} -gt 0 ]]; then
+        log_error "Failed to install: ${failed[*]}"
+        return 1
+    fi
+    return 0
+}
+
+# Add get_pinned_version function
+get_pinned_version() {
+    local pkg="$1"
+    local var_name="CFG_PINNED_${pkg//-/_}"
+    var_name="${var_name^^}"
+    echo "${!var_name:-}"
+}
+
+export -f get_pinned_version
+PATCH_EOF

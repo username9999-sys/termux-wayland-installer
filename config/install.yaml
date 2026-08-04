@@ -1,0 +1,371 @@
+# ============================================================
+# termux-wayland-installer - Configuration File
+# Edit this file to customize your installation
+# ============================================================
+
+# ---- General Settings ----
+general:
+  # Installation mode: "hyprland" | "kde" | "both"
+  desktop_environment: "hyprland"
+
+  # Theme: "catppuccin" | "everforest" | "tokyonight" | "dracula" | "nord" | "rose-pine" | "gruvbox"
+  theme: "catppuccin"
+
+  # Theme variant (for themes that support it): "light" | "dark" | "mocha" | "macchiato" | "latte" | "frappe" | "storm" | "night" | "day" | "moon" | "dawn" | "main" | "material" | "default"
+  theme_variant: "mocha"
+
+  # Enable verbose logging
+  verbose: false
+
+  # Skip confirmation prompts (for automation)
+  auto_confirm: false
+
+  # Wallpaper URL (leave empty for auto gradient)
+  wallpaper_url: "https://github.com/catppuccin/wallpapers/raw/main/assets/Mocha/2560x1440.png"
+
+  # Wallpaper SHA256 for verification (optional, leave empty to skip)
+  wallpaper_sha256: ""
+
+  # Create desktop shortcuts
+  create_shortcuts: true
+
+# ---- User Configuration ----
+user:
+  # Proot container username (non-root recommended for security)
+  # Default: "user"
+  username: "user"
+
+  # Proot container password (leave empty for no password / key-only)
+  # Default: ""
+  password: ""
+
+  # Add user to these additional groups
+  extra_groups: ["wheel", "video", "render", "audio", "input", "storage"]
+
+  # Shell for proot user
+  shell: "/bin/bash"
+
+# ---- Proot Container ----
+proot:
+  # Distro: "archlinux" | "debian" | "ubuntu" | "fedora" | "alpine"
+  distro: "archlinux"
+
+  # Distro label for display
+  label: "Arch Linux"
+
+  # Extra packages to install in proot (space-separated)
+  # These are in addition to the base desktop/game-dev packages
+  extra_packages: ""
+
+  # Enable systemd in proot (experimental)
+  enable_systemd: false
+
+  # Bind mounts (additional paths to bind into proot)
+  # Format: "host_path:container_path"
+  extra_binds: []
+
+  # Proot-distro rootfs directory (auto-detected if empty)
+  rootfs_path: ""
+
+# ---- GPU / Graphics ----
+gpu:
+  # Force GPU driver: "auto" | "freedreno" | "zink" | "llvmpipe"
+  driver: "auto"
+
+  # Vulkan ICD path (auto-detected if empty)
+  vulkan_icd: ""
+
+  # Enable VirGL renderer
+  virgl: true
+
+  # Enable Zink + Turnip for Adreno
+  turnip: true
+
+  # Force software rendering (fallback)
+  force_software: false
+
+  # MESA version override
+  gl_version_override: "4.6"
+  gles_version_override: "3.2"
+
+# ---- Audio ----
+audio:
+  # PipeWire modules to install
+  modules:
+    - "pipewire"
+    - "wireplumber"
+    - "pipewire-pulse"
+    - "pipewire-jack"
+    - "libspa"
+    - "alsa-utils"
+    - "pamixer"
+    - "pavucontrol-qt"
+
+  # Enable Bluetooth audio (requires bluez)
+  bluetooth: true
+
+  # Default sample rate
+  sample_rate: 48000
+
+# ---- Repositories ----
+repositories:
+  # Additional Termux repositories to enable
+  enabled:
+    - "x11-repo"
+    - "tur-repo"
+    - "game-repo"
+    - "science-repo"
+
+  # Package version pinning (package=version)
+  # Leave empty for latest
+  pinned_versions: {}
+
+# ---- Packages ----
+packages:
+  # Core Wayland stack
+  wayland_core:
+    - "termux-x11-nightly"
+    - "wayland"
+    - "wayland-protocols"
+    - "xorg-xwayland"
+    - "libxkbcommon"
+    - "libseat"
+    - "libdrm"
+    - "libdisplay-info"
+    - "libinput"
+    - "libudev"
+    - "pixman"
+    - "cairo"
+    - "pango"
+    - "gdk-pixbuf"
+    - "gtk4"
+    - "gtk4-layer-shell"
+
+  # Hyprland ecosystem
+  hyprland:
+    - "hyprland"
+    - "hyprpaper"
+    - "hyprlock"
+    - "hypridle"
+    - "hyprcursor"
+    - "hyprutils"
+    - "hyprwayland-scanner"
+    - "aquamarine"
+    - "xdg-desktop-portal-hyprland"
+    - "xdg-desktop-portal-gtk"
+    - "xdg-desktop-portal-wlr"
+    - "polkit"
+
+  # KDE Plasma
+  kde:
+    - "plasma-desktop"
+    - "plasma-workspace"
+    - "plasma-workspace-wayland"
+    - "kwin"
+    - "kwin-wayland"
+    - "sddm"
+    - "breeze"
+    - "breeze-gtk"
+    - "kde-cli-tools"
+    - "konsole"
+    - "dolphin"
+    - "kate"
+    - "kcalc"
+    - "spectacle"
+    - "kwalletmanager"
+    - "systemsettings"
+    - "plasma-nm"
+    - "bluedevil"
+    - "powerdevil"
+    - "kdeconnect"
+
+  # UI Tools (shared)
+  ui_tools:
+    - "waybar"
+    - "wofi"
+    - "swaync"
+    - "swaybg"
+    - "grim"
+    - "slurp"
+    - "swappy"
+    - "wl-clipboard"
+    - "cliphist"
+    - "brightnessctl"
+    - "pavucontrol"
+    - "network-manager-applet"
+    - "blueman"
+    - "thunar"
+    - "thunar-volman"
+    - "thunar-archive-plugin"
+    - "gvfs"
+    - "gvfs-mtp"
+    - "file-roller"
+    - "mousepad"
+    - "foot"
+    - "kitty"
+
+  # GPU Acceleration
+  gpu_packages:
+    - "mesa-zink"
+    - "mesa-vulkan-icd-freedreno"
+    - "vulkan-loader-android"
+    - "virglrenderer"
+    - "libepoxy"
+    - "libva"
+    - "libvdpau"
+    - "vulkan-tools"
+    - "mesa-utils"
+    - "glmark2"
+
+  # Development Tools
+  dev_tools:
+    - "git"
+    - "cmake"
+    - "ninja"
+    - "meson"
+    - "pkg-config"
+    - "clang"
+    - "lld"
+    - "llvm"
+    - "python"
+    - "python-pip"
+    - "nodejs"
+    - "rust"
+    - "cargo"
+    - "go"
+    - "jdk-21"
+    - "gradle"
+    - "android-sdk"
+    - "code-oss"
+    - "neovim"
+    - "lazygit"
+    - "btop"
+    - "fd"
+    - "ripgrep"
+    - "fzf"
+    - "zoxide"
+    - "eza"
+    - "bat"
+    - "delta"
+    - "starship"
+
+  # Game Development
+  gamedev:
+    - "godot"
+    - "steam"
+    - "lutris"
+    - "bottles"
+    - "heroic-games-launcher"
+    - "mangohud"
+    - "gamemode"
+    - "renderdoc"
+    - "hotspot"
+    - "vkcube"
+
+  # Fonts
+  fonts:
+    - "fontconfig"
+    - "noto-fonts"
+    - "noto-fonts-cjk"
+    - "noto-fonts-emoji"
+    - "jetbrains-mono-ttf"
+    - "fira-code-ttf"
+    - "ttf-font-awesome"
+    - "otf-font-awesome"
+    - "ttf-nerd-fonts-symbols"
+    - "adobe-source-code-pro-fonts"
+
+  # Proot
+  proot:
+    - "proot-distro"
+    - "proot"
+
+  # Optional: VNC
+  vnc:
+    - "tigervnc"
+
+# ---- Feature Flags ----
+features:
+  # Install Proot container
+  install_proot: true
+
+  # Install Game Development stack
+  install_gamedev: true
+
+  # Install Development Tools
+  install_devtools: true
+
+  # Install VNC (TigerVNC)
+  install_vnc: false
+
+  # Setup VNC password interactively
+  vnc_interactive: true
+
+  # VNC default password (if not interactive)
+  vnc_password: "wayland"
+
+  # VNC resolution
+  vnc_geometry: "1920x1080"
+
+  # Setup SSH server in proot
+  setup_ssh: false
+
+  # Configure input method (fcitx5 for CJK)
+  input_method: false
+
+  # Input method engine: "fcitx5" | "ibus"
+  input_method_engine: "fcitx5"
+
+  # Enable tablet/stylus support (Wacom, S-Pen)
+  tablet_support: false
+
+  # Auto-start Hyprland/KDE on Termux boot (via termux:boot)
+  autostart: false
+
+  # Create uninstall script
+  create_uninstall: true
+
+# ---- Health Checks ----
+health:
+  # Run post-install verification
+  enabled: true
+
+  # Checks to run
+  checks:
+    - "hyprland_config"
+    - "pipewire"
+    - "wayland_session"
+    - "gpu_acceleration"
+    - "proot_container"
+    - "desktop_shortcuts"
+
+# ---- Update/Backup ----
+update:
+  # Backup configs before update
+  backup_before_update: true
+
+  # Backup directory
+  backup_dir: "~/termux-wayland-backups"
+
+  # Keep N backups
+  keep_backups: 5
+
+  # Auto-migrate configs on version change
+  auto_migrate: true
+
+# ---- Advanced ----
+advanced:
+  # Custom pre-install script (path relative to scripts/)
+  pre_install_script: ""
+
+  # Custom post-install script
+  post_install_script: ""
+
+  # Skip system update/upgrade
+  skip_system_update: false
+
+  # Parallel package installs (experimental)
+  parallel_installs: false
+
+  # Debug mode (set -x)
+  debug: false
