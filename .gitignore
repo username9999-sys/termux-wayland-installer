@@ -1,0 +1,45 @@
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Build/dist
+dist/
+build/
+*.tar.gz
+*.zip
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# SSH keys (never commit!)
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+
+# OS generated
+Thumbs.db
+ehthumbs.db
+Desktop.ini
