@@ -1,0 +1,45 @@
+name: Shellcheck Lint
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - '*.sh'
+      - 'lib/**/*.sh'
+      - 'modules/**/*.sh'
+      - 'scripts/**/*.sh'
+  pull_request:
+    branches: [master, main]
+    paths:
+      - '*.sh'
+      - 'lib/**/*.sh'
+      - 'modules/**/*.sh'
+      - 'scripts/**/*.sh'
+
+jobs:
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo -S -p '' apt-get install -y shellcheck
+
+      - name: Run shellcheck on all .sh files
+        run: |
+          find . -name "*.sh" -type f ! -path "./.git/*" | xargs shellcheck -x
+        continue-on-error: false
+
+      - name: Check for common issues
+        run: |
+          # Check for shebang
+          find . -name "*.sh" -type f ! -path "./.git/*" | while read f; do
+            head -1 "$f" | grep -q "^#!/.*bash\|^#!/.*sh" || echo "⚠️  Missing shebang: $f"
+          done
+
+          # Check for set -euo pipefail
+          find . -name "*.sh" -type f ! -path "./.git/*" | while read f; do
+            grep -q "set -euo pipefail" "$f" || echo "⚠️  Missing 'set -euo pipefail': $f"
+          done
