@@ -10,13 +10,16 @@ step_repositories() {
     local repos_str=$(cfg_get_array "repositories.enabled")
     local failed=()
 
-    # Use while loop to properly handle space-separated values
-    local repo
+    # Temporarily restore IFS to include space for word splitting
+    # Note: $'\t\n' needed for escape sequences to be interpreted
+    local old_ifs="$IFS"
+    IFS=$' \t\n'
     for repo in ${repos_str}; do
         if ! execute install_pkg "${repo}" "${repo}"; then
             failed+=("${repo}")
         fi
     done
+    IFS="$old_ifs"
 
     if [[ ${#failed[@]} -gt 0 ]]; then
         log_error "Failed to add repositories: ${failed[*]}"
