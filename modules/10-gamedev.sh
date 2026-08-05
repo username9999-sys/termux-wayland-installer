@@ -4,54 +4,21 @@
 # ============================================================
 
 step_gamedev() {
-    print_step $((++CURRENT_STEP)) "${TOTAL_STEPS}" "Installing Game Development Stack"
+    print_step $((++CURRENT_STEP)) "${TOTAL_STEPS}" "Game Development (will be installed in proot container)"
     echo ""
 
+    # Game dev packages are installed inside the proot container, not in Termux
+    # This step just logs the packages that will be installed in the proot container
     local packages_str=$(cfg_get_array "packages.gamedev")
-    local failed=()
-
-    # Temporarily restore IFS to include space for word splitting
+    log_info "The following game dev packages will be installed in the proot container:"
     local old_ifs="$IFS"
     IFS=$' \t\n'
     for pkg_spec in ${packages_str}; do
         IFS='|' read -r pkg name <<< "${pkg_spec}"
         name="${name:-$pkg}"
-        if ! execute install_pkg "${pkg}" "${name}"; then
-            failed+=("${name}")
-        fi
+        log_info "  - ${name} (${pkg})"
     done
     IFS="$old_ifs"
 
-    if [[ ${#failed[@]} -gt 0 ]]; then
-        log_error "Failed to install game dev packages: ${failed[*]}"
-        return 1
-    fi
-
-    # Setup MangoHud config
-    setup_mangohud_config() {
-        mkdir -p "${HOME}/.config/MangoHud"
-        cat > "${HOME}/.config/MangoHud/MangoHud.conf" << 'EOF'
-# MangoHud configuration
-gpu_stats
-gpu_text
-cpu_stats
-cpu_text
-ram
-vram
-fps
-frame_timing
-arch
-gpu_color=00FFFF
-cpu_color=00FF00
-ram_color=FFFF00
-vram_color=FF00FF
-fps_color=FFFFFF
-EOF
-    }
-    execute setup_mangohud_config
-
-    # Setup gamemode
-    execute systemctl --user enable gamemoded 2>/dev/null || true
-
-    log_success "Game development stack installed"
+    log_success "Game dev packages will be installed in proot container during step_proot"
 }

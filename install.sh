@@ -156,8 +156,13 @@ fi
 
 # Auto-confirm or prompt
 if [[ "${CFG_GENERAL_AUTO_CONFIRM:-false}" != "true" && "${DRY_RUN}" != "true" && "${UNINSTALL}" != "true" ]]; then
-    read -p "Continue with installation? (y/N): " CONFIRM
-    [[ "${CONFIRM}" =~ ^[Yy]$ ]] || { log_info "Installation cancelled"; exit 0; }
+    # Check if we have a TTY for interactive prompt
+    if [[ -t 0 ]]; then
+        read -p "Continue with installation? (y/N): " CONFIRM
+        [[ "${CONFIRM}" =~ ^[Yy]$ ]] || { log_info "Installation cancelled"; exit 0; }
+    else
+        log_info "Non-interactive mode, auto-confirming installation"
+    fi
 fi
 
 # ---- Main Installation Flow ----

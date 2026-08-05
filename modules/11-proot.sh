@@ -30,7 +30,7 @@ step_proot() {
 
     # Install distro
     execute run_with_spinner "Installing ${PROOT_LABEL} rootfs" \
-        proot-distro install "${PROOT_DISTRO}"
+        bash -c "proot-distro list 2>&1 | grep -q \"^  \* ${PROOT_DISTRO}$\" && proot-distro reset ${PROOT_DISTRO} || proot-distro install ${PROOT_DISTRO}"
 
     # Bootstrap with essential packages
     log_info "Bootstrapping ${PROOT_LABEL} with essential packages..."
@@ -41,25 +41,25 @@ step_proot() {
         archlinux|arch)
             distro_packages="mesa vulkan-radeon vulkan-intel vulkan-tools libglvnd libva libvdpau xorg-server-xwayland pipewire wireplumber dbus polkit sudo git base-devel python python-pip nodejs npm clang llvm lld cmake ninja meson"
             [[ "${INSTALL_GAMEDEV}" == "true" ]] && distro_packages="${distro_packages} godot steam lutris bottles mangohud gamemode"
-            [[ "${DE}" == "hyprland" ]] && distro_packages="${distro_packages} hyprland waybar wofi swaync foot kitty neovim"
-            [[ "${DE}" == "kde" ]] && distro_packages="${distro_packages} kate konsole dolphin"
+            [[ "${DE}" == "hyprland" ]] && distro_packages="${distro_packages} hyprland hyprpaper hyprlock hypridle hyprcursor hyprutils hyprwayland-scanner aquamarine xdg-desktop-portal-hyprland xdg-desktop-portal-gtk xdg-desktop-portal-wlr polkit waybar wofi swaync swaybg grim slurp swappy wl-clipboard cliphist brightnessctl pavucontrol network-manager-applet blueman thunar thunar-volman thunar-archive-plugin gvfs gvfs-mtp file-roller mousepad foot kitty neovim"
+            [[ "${DE}" == "kde" ]] && distro_packages="${distro_packages} plasma-desktop plasma-workspace plasma-workspace-wayland kwin kwin-wayland sddm breeze breeze-gtk kde-cli-tools konsole dolphin kate kcalc spectacle kwalletmanager systemsettings plasma-nm bluedevil powerdevil kdeconnect"
             ;;
         debian|ubuntu)
             distro_packages="mesa-vulkan-drivers libglx-mesa0 libva2 libvdpau1 xwayland pipewire wireplumber dbus polkit sudo git build-essential python3 python3-pip nodejs npm clang llvm lld cmake ninja-build meson"
             [[ "${INSTALL_GAMEDEV}" == "true" ]] && distro_packages="${distro_packages} steam lutris bottles mangohud gamemode"
-            [[ "${DE}" == "hyprland" ]] && distro_packages="${distro_packages} hyprland waybar wofi swaync foot kitty neovim"
+            [[ "${DE}" == "hyprland" ]] && distro_packages="${distro_packages} hyprland hyprpaper hyprlock hypridle hyprcursor hyprutils hyprwayland-scanner aquamarine xdg-desktop-portal-hyprland xdg-desktop-portal-gtk xdg-desktop-portal-wlr polkit waybar wofi swaync swaybg grim slurp swappy wl-clipboard cliphist brightnessctl pavucontrol network-manager-applet blueman thunar thunar-volman thunar-archive-plugin gvfs gvfs-mtp file-roller mousepad foot kitty neovim"
             [[ "${DE}" == "kde" ]] && distro_packages="${distro_packages} kde-plasma-desktop konsole dolphin kate"
             ;;
         fedora)
             distro_packages="mesa-vulkan-drivers libglvnd libva libvdpau xorg-x11-server-Xwayland pipewire wireplumber dbus polkit sudo git gcc gcc-c++ make cmake ninja-build meson python3 python3-pip nodejs npm clang llvm lld"
             [[ "${INSTALL_GAMEDEV}" == "true" ]] && distro_packages="${distro_packages} steam lutris bottles mangohud gamemode"
-            [[ "${DE}" == "hyprland" ]] && distro_packages="${distro_packages} hyprland waybar wofi swaync foot kitty neovim"
+            [[ "${DE}" == "hyprland" ]] && distro_packages="${distro_packages} hyprland hyprpaper hyprlock hypridle hyprcursor hyprutils hyprwayland-scanner aquamarine xdg-desktop-portal-hyprland xdg-desktop-portal-gtk xdg-desktop-portal-wlr polkit waybar wofi swaync swaybg grim slurp swappy wl-clipboard cliphist brightnessctl pavucontrol network-manager-applet blueman thunar thunar-volman thunar-archive-plugin gvfs gvfs-mtp file-roller mousepad foot kitty neovim"
             [[ "${DE}" == "kde" ]] && distro_packages="${distro_packages} @kde-desktop konsole dolphin kate"
             ;;
         alpine)
             distro_packages="mesa-vulkan-drivers libglvnd libva libvdpau xwayland pipewire wireplumber dbus polkit sudo git build-base python3 py3-pip nodejs npm clang llvm lld cmake ninja meson"
             [[ "${INSTALL_GAMEDEV}" == "true" ]] && distro_packages="${distro_packages} steam lutris bottles mangohud gamemode"
-            [[ "${DE}" == "hyprland" ]] && distro_packages="${distro_packages} hyprland waybar wofi swaync foot kitty neovim"
+            [[ "${DE}" == "hyprland" ]] && distro_packages="${distro_packages} hyprland hyprpaper hyprlock hypridle hyprcursor hyprutils hyprwayland-scanner aquamarine xdg-desktop-portal-hyprland xdg-desktop-portal-gtk xdg-desktop-portal-wlr polkit waybar wofi swaync swaybg grim slurp swappy wl-clipboard cliphist brightnessctl pavucontrol network-manager-applet blueman thunar thunar-volman thunar-archive-plugin gvfs gvfs-mtp file-roller mousepad foot kitty neovim"
             [[ "${DE}" == "kde" ]] && distro_packages="${distro_packages} plasma-desktop konsole dolphin kate"
             ;;
         *)

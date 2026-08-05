@@ -21,7 +21,7 @@ general:
   auto_confirm: false
 
   # Wallpaper URL (leave empty for auto gradient)
-  wallpaper_url: "https://github.com/catppuccin/wallpapers/raw/main/assets/Mocha/2560x1440.png"
+  wallpaper_url: ""
 
   # Wallpaper SHA256 for verification (optional, leave empty to skip)
   wallpaper_sha256: ""
@@ -48,10 +48,11 @@ user:
 # ---- Proot Container ----
 proot:
   # Distro: "archlinux" | "debian" | "ubuntu" | "fedora" | "alpine"
-  distro: "archlinux"
+  # NOTE: archlinux only supports amd64 in proot-distro. Use debian/ubuntu for ARM64.
+  distro: "debian"
 
   # Distro label for display
-  label: "Arch Linux"
+  label: "Debian"
 
   # Extra packages to install in proot (space-separated)
   # These are in addition to the base desktop/game-dev packages
@@ -125,23 +126,23 @@ packages:
   # Core Wayland stack
   wayland_core:
     - "termux-x11-nightly"
-    - "wayland"
-    - "wayland-protocols"
-    - "xorg-xwayland"
+    - "libwayland"
+    - "libwayland-protocols"
+    - "xwayland"
     - "libxkbcommon"
     - "libseat"
     - "libdrm"
     - "libdisplay-info"
-    - "libinput"
-    - "libudev"
-    - "pixman"
-    - "cairo"
+    # libinput and libudev not available in Termux
+    - "libpixman"
+    - "libcairo"
     - "pango"
     - "gdk-pixbuf"
     - "gtk4"
-    - "gtk4-layer-shell"
+    - "gtk-layer-shell"
 
-  # Hyprland ecosystem
+  # Hyprland ecosystem (installed inside proot container, not Termux)
+  # These packages are installed inside the proot container during step_proot
   hyprland:
     - "hyprland"
     - "hyprpaper"
@@ -156,7 +157,7 @@ packages:
     - "xdg-desktop-portal-wlr"
     - "polkit"
 
-  # KDE Plasma
+  # KDE Plasma (installed inside proot container, not Termux)
   kde:
     - "plasma-desktop"
     - "plasma-workspace"
