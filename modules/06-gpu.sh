@@ -17,16 +17,20 @@ step_gpu() {
         log_info "Auto-detected GPU driver: ${GPU_DRIVER}"
     fi
 
-    local packages=($(cfg_get_array "packages.gpu_packages"))
+    local packages_str=$(cfg_get_array "packages.gpu_packages")
     local failed=()
 
-    for pkg_spec in "${packages[@]}"; do
+    # Temporarily restore IFS to include space for word splitting
+    local old_ifs="$IFS"
+    IFS=$' \t\n'
+    for pkg_spec in ${packages_str}; do
         IFS='|' read -r pkg name <<< "${pkg_spec}"
         name="${name:-$pkg}"
         if ! execute install_pkg "${pkg}" "${name}"; then
             failed+=("${name}")
         fi
     done
+    IFS="$old_ifs"
 
     if [[ ${#failed[@]} -gt 0 ]]; then
         log_error "Failed to install GPU packages: ${failed[*]}"
