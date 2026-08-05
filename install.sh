@@ -233,7 +233,7 @@ main() {
 
     step_finalize
 
-    [[ "${HEALTH_ENABLED}" == "true" ]] && step_health_checks
+    [[ "${HEALTH_ENABLED}" == "true" ]] && [[ "${DRY_RUN:-false}" != "true" ]] && step_health_checks
 
     print_completion_message
 }

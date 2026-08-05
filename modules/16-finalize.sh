@@ -65,7 +65,7 @@ create_install_summary() {
     execute mkdir -p "$(dirname "${summary_file}")"
 
     local install_date=$(date)
-    local git_commit=$(cd /root/termux-wayland-installer && git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+    local git_commit=$(cd "${SCRIPT_DIR}/.." && git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 
     execute cat > "${summary_file}" << SUMMARYEOF
 ═══════════════════════════════════════════════════════════════
@@ -190,7 +190,7 @@ VNC connection refused?
 ═══════════════════════════════════════════════════════════════
 
 Update installer:
-  cd /root/termux-wayland-installer && git pull
+  cd "${SCRIPT_DIR}/.." && git pull
   ./install.sh --update
 
 Uninstall:
@@ -243,7 +243,7 @@ setup_update_mechanism() {
 #!/data/data/com.termux/files/usr/bin/bash
 # termux-wayland-installer Update Script
 
-INSTALLER_DIR="/root/termux-wayland-installer"
+INSTALLER_DIR="${SCRIPT_DIR}/.."
 CONFIG_FILE="${HOME}/.config/termux-wayland-installer/config.yaml"
 
 echo "═══════════════════════════════════════════"
@@ -442,7 +442,7 @@ echo "  Uninstall Complete"
 echo "═══════════════════════════════════════════"
 echo ""
 echo "To reinstall, run:"
-echo "  /root/termux-wayland-installer/install.sh"
+echo "  ${SCRIPT_DIR}/../install.sh"
 echo ""
 echo "Note: Termux packages were NOT removed."
 echo "To remove packages: pkg uninstall <package>"

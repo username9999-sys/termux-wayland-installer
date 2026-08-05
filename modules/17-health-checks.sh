@@ -51,8 +51,8 @@ check_termux_environment() {
     log_info "Checking Termux environment..."
 
     # Termux version
-    local termux_ver=$(pkg --version 2>/dev/null | head -1)
-    [[ -n "$termux_ver" ]] && log_info "  Termux: $termux_ver" || { log_error "  Termux not found"; return 1; }
+    local termux_ver=$(apt-cache show termux-tools 2>/dev/null | grep Version | head -1 | awk '{print $2}')
+    [[ -n "$termux_ver" ]] && log_info "  Termux: $termux_ver" || { log_warn "  Termux: Unknown"; }
 
     # Android version
     local android_ver=$(getprop ro.build.version.release 2>/dev/null)

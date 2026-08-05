@@ -122,7 +122,10 @@ declare -A THEME_GRUVBOX_DARK=(
 apply_theme() {
     local theme="${1:-${CFG_GENERAL_THEME:-catppuccin}}"
     local variant="${2:-${CFG_GENERAL_THEME_VARIANT:-mocha}}"
-    local theme_key="THEME_${theme^^//-/_}_${variant^^}"
+    # Normalize theme name for array lookup (uppercase, hyphens to underscores)
+    local norm_theme="${theme^^}"
+    norm_theme="${norm_theme//-/_}"
+    local theme_key="THEME_${norm_theme}_${variant^^}"
 
     log_info "Applying theme: ${theme} (${variant})"
 
