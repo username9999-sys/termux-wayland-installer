@@ -7,10 +7,12 @@ step_repositories() {
     print_step $((++CURRENT_STEP)) "${TOTAL_STEPS}" "Adding Termux Repositories"
     echo ""
 
-    local repos=($(cfg_get_array "repositories.enabled"))
+    local repos_str=$(cfg_get_array "repositories.enabled")
     local failed=()
 
-    for repo in "${repos[@]}"; do
+    # Use while loop to properly handle space-separated values
+    local repo
+    for repo in ${repos_str}; do
         if ! execute install_pkg "${repo}" "${repo}"; then
             failed+=("${repo}")
         fi
